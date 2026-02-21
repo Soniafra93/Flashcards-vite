@@ -2,7 +2,12 @@
 <!-- if needed we can pull the subcomponents in here -->
 <!-- the script is the JS part -->
 <script>
+import WordCard from "./components/WordCard.vue";
+
 export default {
+  components: {
+    WordCard,
+  },
   data() {
     return {
       words: [
@@ -50,12 +55,8 @@ export default {
     },
   },
   methods: {
-    checkAnswer(word) {
-      word.correct = word.word_b == word.answer;
-      // here we are incrementing the correct count if the answer is correct
-      if (word.correct) {
-        this.correctCount++;
-      }
+    incrementCorrectCount() {
+      this.correctCount++;
     },
   },
 };
@@ -71,21 +72,13 @@ export default {
   </p>
 
   <div id="cards">
-    <!--the v-bind is adding the class css correct to this dive when the word is correct-->
-    <div
-      class="card"
+    <!-- This is our word card component and we treat the wordcard component as an html element-->
+    <!-- the v-bind:word is used to get the individual word from the wordcard passing the props data-->
+    <WordCard
       v-for="word in shuffledWords"
-      v-bind:class="{ correct: word.correct }"
-    >
-      <p class="word">{{ word.word_a }}</p>
-      <input
-        v-if="!word.correct"
-        type="text"
-        v-model="word.answer"
-        v-on:keyup.enter="checkAnswer(word)"
-      />
-      <p v-else class="correctAnswer">{{ word.answer }}</p>
-    </div>
+      v-bind:word="word"
+      v-on:incrementCorrectCount="incrementCorrectCount"
+    ></WordCard>
   </div>
 </template>
 
@@ -110,36 +103,6 @@ export default {
   display: grid;
   grid-template-columns: 300px 300px 300px;
   grid-gap: 30px;
-}
-
-.card {
-  background-color: #e8f0ff;
-  border-radius: 5px;
-  padding: 10px 0;
-  font-size: 25px;
-}
-
-input[type="text"] {
-  border: 0;
-  font-size: 25px;
-  border-radius: 5px;
-  margin-top: 5px;
-  text-align: center;
-  padding: 5px;
-}
-
-.word {
-  font-weight: bold;
-}
-
-.correctAnswer {
-  padding: 0;
-  margin: 0;
-}
-
-.correct {
-  color: #0f5132;
-  background-color: #d1e7dd;
 }
 
 #correctCount {
